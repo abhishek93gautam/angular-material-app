@@ -11,7 +11,10 @@ import {MatButtonModule,MatIconModule,MatFormFieldModule,
         MatCardModule,
         MatSelectModule,
         MatProgressSpinnerModule,
-        MatDialogModule} from '@angular/material';
+        MatDialogModule,
+        MatTableModule,
+        MatSortModule,
+        MatPaginatorModule} from '@angular/material';
 
 
 @NgModule({
@@ -30,7 +33,10 @@ import {MatButtonModule,MatIconModule,MatFormFieldModule,
             MatCardModule,
             MatSelectModule,
             MatProgressSpinnerModule,
-            MatDialogModule
+            MatDialogModule,
+            MatTableModule,
+            MatSortModule,
+            MatPaginatorModule
     ],
     exports:[
             MatButtonModule,
@@ -47,7 +53,10 @@ import {MatButtonModule,MatIconModule,MatFormFieldModule,
             MatCardModule,
             MatSelectModule,
             MatProgressSpinnerModule,
-            MatDialogModule
+            MatDialogModule,
+            MatTableModule,
+            MatSortModule,
+            MatPaginatorModule
     ]
 })
 export class MaterialModule{
