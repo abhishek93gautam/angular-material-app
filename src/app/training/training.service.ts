@@ -3,23 +3,27 @@ import { Subject } from 'rxjs/Subject';
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Injectable()
 export class TrainingService { 
 
     exerciseChanged = new Subject<Exercise>();
     exercisesChanged = new Subject<Exercise[]>();
+    finishedExercisesChanged = new Subject<Exercise[]>();
+
+    private fbSubs : Subscription[] = [];
+
     private availableExercises : Exercise[] = [];
 
     private runningExercise : Exercise;
-    private exercises : Exercise[] = [];
 
     constructor(private db: AngularFirestore){
 
     }
 
     fetchAvailableExercises(){
-        this.db.collection('availableExercises')
+        this.fbSubs.push(this.db.collection('availableExercises')
         .snapshotChanges()
         .pipe(map(docArray => {
           return docArray.map(doc=>{
@@ -33,10 +37,12 @@ export class TrainingService {
         })).subscribe((exercises : Exercise[]) =>{
             this.availableExercises = exercises;
             this.exercisesChanged.next([...this.availableExercises]);
-        });
+        }));
     }
 
     startExercie(selectId : string){
+        //this.db.doc('availableExercises/' + selectId).update({ lastSelected : new Date() });
+
         const selectedExercise = this.availableExercises.find(ex=>{
             return ex.id === selectId
         })
@@ -63,11 +69,17 @@ export class TrainingService {
         return {...this.runningExercise};
     }
 
-    getCompletedOrCancelledExercises(){
-        return this.exercises.slice();
+    fetchCompletedOrCancelledExercises(){
+        this.fbSubs.push(this.db.collection('finishedExercises').valueChanges().subscribe((exercises:Exercise[])=>{
+            this.finishedExercisesChanged.next(exercises);
+        }));
     }
 
     private addDatatoDatabase(exercise: Exercise){
         this.db.collection('finishedExercises').add(exercise);
+    }
+
+    cancelSubscriptions() {
+        this.fbSubs.forEach(sub => sub.unsubscribe());
     }
 }

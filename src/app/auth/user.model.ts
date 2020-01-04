@@ -1,5 +1,5 @@
 
 export interface User{
-    email:String;
+    email  : String;
     userId : String;
 }
