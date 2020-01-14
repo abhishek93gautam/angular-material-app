@@ -7,6 +7,9 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { TrainingService } from '../training/training.service';
 import { MatSnackBar } from '@angular/material';
 import { UIService } from '../shared/ui.service';
+import { Store } from '@ngrx/store';
+import * as fromRoot from '../app.reducer';
+import * as UI from '../shared/ui.actions';
 
 @Injectable()
 export class AuthService{
@@ -17,7 +20,8 @@ export class AuthService{
     constructor(private router : Router, 
                 private afAuth : AngularFireAuth,
                 private trainingService : TrainingService,
-                private uiservice : UIService)
+                private uiservice : UIService,
+                private store : Store<fromRoot.State>)
                 {}
 
     initAuthListener() {
@@ -37,25 +41,31 @@ export class AuthService{
     }
 
     registerUser(authData : AuthData){
-        this.uiservice.loadingStateChanged.next(true);
+        //this.uiservice.loadingStateChanged.next(true);
+        this.store.dispatch(new UI.StartLoading());
         this.afAuth.auth.createUserWithEmailAndPassword(authData.email.toString(), authData.password.toString())
                             .then(result=>{
-                                this.uiservice.loadingStateChanged.next(false);
+                                //this.uiservice.loadingStateChanged.next(false);
+                                this.store.dispatch(new UI.StopLoading());
                             })
                             .catch(error => {
-                                this.uiservice.loadingStateChanged.next(false);
+                                //this.uiservice.loadingStateChanged.next(false);
+                                this.store.dispatch(new UI.StopLoading());
                                 this.uiservice.showSnackBar(error.message, null, 3000);
                             });
     }
 
     login(authData : AuthData){
-        this.uiservice.loadingStateChanged.next(true);
+        //this.uiservice.loadingStateChanged.next(true);
+        this.store.dispatch(new UI.StartLoading());
         this.afAuth.auth.signInWithEmailAndPassword(authData.email.toString(),authData.password.toString())
                             .then(result=>{
-                                this.uiservice.loadingStateChanged.next(false);
+                                //this.uiservice.loadingStateChanged.next(false);
+                                this.store.dispatch(new UI.StopLoading());
                             })
                             .catch(error => {
-                                this.uiservice.loadingStateChanged.next(false);
+                                //this.uiservice.loadingStateChanged.next(false);
+                                this.store.dispatch(new UI.StopLoading());
                                 this.uiservice.showSnackBar(error.message, null, 3000);
                             });
     }
