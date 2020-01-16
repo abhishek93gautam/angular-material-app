@@ -1,11 +1,9 @@
 import {Subject} from 'rxjs/Subject';
-
 import { AuthData } from './auth-data.model';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from 'angularfire2/auth'; 
 import { TrainingService } from '../training/training.service';
-import { MatSnackBar } from '@angular/material';
 import { UIService } from '../shared/ui.service';
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../app.reducer';
